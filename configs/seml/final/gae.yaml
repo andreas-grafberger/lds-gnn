@@ -1,0 +1,203 @@
+seml:
+  db_collection: final-results
+  executable: /nfs/students/grafberg/guided-research/guided-research-ws19/src/scripts/bilevel.py
+  conda_environment: guided-research-ws19
+slurm:
+  name: final-results
+  output_dir: slurm
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 15G          # memory
+    cpus-per-task: 1  # num cores
+    time: 0-01:00     # max time, D-HH:MM
+    #exclude: gpu[02,04,07-13,14,16]
+
+###### BEGIN PARAMETER CONFIGURATION ######
+
+fixed:
+
+  device: cuda
+  hidden_sizes: 16
+  gcn_weight_decay:  0.0005
+  n_samples_empirical_mean: 16
+  gcn_optimizer_learning_rate: 0.01
+  dropout: 0.5
+  patience: 20
+  graph_model: gae
+
+grid:
+  hyper_gradient_interval:
+    type: choice
+    options:
+      - 5
+      - 10
+
+  gae:
+    type: parameter_collection
+    params:
+      embedding_dim:
+        type: choice
+        options:
+          - 16
+      normalize_similarities:
+        type: choice
+        options:
+          - True
+      probs_bias_init:
+        type: choice
+        options:
+          - 0.0
+      probs_factor_init:
+        type: choice
+        options:
+          - 1.0
+      weights_lr:
+        type: choice
+        options:
+          - 0.01
+      affine_prob_lr:
+        type: choice
+        options:
+          - 0.1
+      optimizer_type:
+        type: choice
+        options:
+          - Adam
+      dropout:
+        type: choice
+        options:
+          - 0.0
+      gcn_weight_decay:
+        type: choice
+        options:
+          - 0.0005
+      add_original:
+        type: choice
+        options:
+          - False
+      use_sigmoid:
+        type: choice
+        options:
+          - True
+      use_tanh:
+        type: choice
+        options:
+          - False
+
+  lds:
+    type: parameter_collection
+    params:
+      directed:
+        type: choice
+        options:
+          - False
+      lr:
+        type: choice
+        options:
+          - 0.1
+
+  outer-trainer:
+    type: parameter_collection
+    params:
+      lr_decay:
+        type: choice
+        options:
+          - 0.99
+      pretrain:
+        type: choice
+        options:
+          - True
+
+  sampler:
+    type: parameter_collection
+    params:
+      sparsification:
+        type: choice
+        options:
+          - KNN
+      k:
+        type: choice
+        options:
+          - 20
+          - 10
+
+random:
+  samples: 10
+  seed: 42
+
+  data:
+    type: parameter_collection
+    params:
+      split_seed:
+        type: randint
+        min: 1
+        max: 999999
+
+
+graph-datasets-planetoid:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - cora
+            - citeseer
+        shuffle_splits:
+          type: choice
+          options:
+            - False
+
+graph-datasets-random-splits:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - cora
+            - citeseer
+        shuffle_splits:
+          type: choice
+          options:
+            - True
+        remove_edges_percentage:
+          type: choice
+          options:
+            - 0.0
+            - 0.25
+            - 0.50
+            - 0.75
+
+uci-datasets-random-splits:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - wine
+            - breast_cancer
+            - digits
+        shuffle_splits:
+          type: choice
+          options:
+            - True
+        knn_metric:
+          type: choice
+          options:
+            - minkowski
+            - cosine
+        nearest_neighbor_k:
+          type: choice
+          options:
+            - 10
+            - 20
+        normalize_features:
+          type: choice
+          options:
+            - False

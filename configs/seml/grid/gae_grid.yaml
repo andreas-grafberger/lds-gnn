@@ -1,0 +1,272 @@
+seml:
+  db_collection: final-grid
+  executable: /nfs/students/grafberg/guided-research/guided-research-ws19/src/scripts/bilevel.py
+  conda_environment: guided-research-ws19
+slurm:
+  name: gae-grid
+  output_dir: slurm
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 15G          # memory
+    cpus-per-task: 1  # num cores
+    time: 0-01:00     # max time, D-HH:MM
+    #exclude: gpu[02,04,07-13,14,16]
+
+###### BEGIN PARAMETER CONFIGURATION ######
+
+fixed:
+
+  device: cuda
+  hidden_sizes: 16
+  gcn_weight_decay:  0.0005
+  n_samples_empirical_mean: 16
+  gcn_optimizer_learning_rate: 0.01
+  dropout: 0.5
+  patience: 20
+  graph_model: gae
+  hyper_gradient_interval: 10
+
+grid:
+  data:
+    type: parameter_collection
+    params:
+      dataset:
+        type: choice
+        options:
+          - citeseer
+      remove_edges_percentage:
+        type: choice
+        options:
+          - 0.0
+      shuffle_splits:
+        type: choice
+        options:
+          - True
+
+  gae:
+    type: parameter_collection
+    params:
+      embedding_dim:
+        type: choice
+        options:
+          - 16
+      normalize_similarities:
+        type: choice
+        options:
+          - True
+      probs_bias_init:
+        type: choice
+        options:
+          - 0.0
+      probs_factor_init:
+        type: choice
+        options:
+          - 1.0
+      weights_lr:
+        type: choice
+        options:
+          - 0.01
+      affine_prob_lr:
+        type: choice
+        options:
+          - 0.1
+      optimizer_type:
+        type: choice
+        options:
+          - Adam
+      dropout:
+        type: choice
+        options:
+          - 0.0
+      gcn_weight_decay:
+        type: choice
+        options:
+          - 0.0005
+      add_original:
+        type: choice
+        options:
+          - False
+      use_sigmoid:
+        type: choice
+        options:
+          - True
+      use_tanh:
+        type: choice
+        options:
+          - False
+
+  sampler:
+    type: parameter_collection
+    params:
+      sparsification:
+        type: choice
+        options:
+          - KNN
+      knn_metric:
+        type: choice
+        options:
+          - cosine
+      k:
+        type: choice
+        options:
+          - 20
+
+  outer-trainer:
+    type: parameter_collection
+    params:
+      pretrain:
+        type: choice
+        options:
+          - True
+
+
+adding_graph:
+  grid:
+    gae:
+      type: parameter_collection
+      params:
+        use_tanh:
+          type: choice
+          options:
+            - False
+            - True
+        add_original:
+          type: choice
+          options:
+            - True
+        use_sigmoid:
+          type: choice
+          options:
+            - False
+
+no-bias:
+  grid:
+    gae:
+      type: parameter_collection
+      params:
+        affine_prob_lr:
+          type: choice
+          options:
+            - 0.1
+            - 0.0
+
+
+different-knn-sample-size:
+  grid:
+    sampler:
+      type: parameter_collection
+      params:
+        k:
+          type: choice
+          options:
+            - 5
+            - 10
+            - 50
+        sparsification:
+          type: choice
+          options:
+            - KNN
+
+
+no-reg:
+  grid:
+    outer-trainer:
+      type: parameter_collection
+      params:
+        regularize:
+          type: choice
+          options:
+            - False
+
+regularization:
+  grid:
+    outer-trainer:
+      type: parameter_collection
+      params:
+        regularize:
+          type: choice
+          options:
+            - True
+        sparsity_factor:
+          type: choice
+          options:
+            - 0.001
+            - 0.01
+            - 0.1
+        smoothness_factor:
+          type: choice
+          options:
+            - 0.001
+            - 0.01
+            - 0.0
+        disconnection_factor:
+          type: choice
+          options:
+            - 0.001
+            - 0.01
+            - 0.0
+
+no-pretrain:
+  grid:
+    outer-trainer:
+      type: parameter_collection
+      params:
+        pretrain:
+          type: choice
+          options:
+            - False
+
+do-pretrain:
+  grid:
+    outer-trainer:
+      type: parameter_collection
+      params:
+        pretrain:
+          type: choice
+          options:
+            - True
+
+non-probabilistic-version:
+  grid:
+    sampler:
+      type: parameter_collection
+      params:
+        dense:
+          type: choice
+          options:
+            - True
+
+    n_samples_empirical_mean:
+      type: choice
+      options:
+        - 1
+
+
+eps_sparsification:
+  grid:
+    sampler:
+      type: parameter_collection
+      params:
+        sparsification:
+          type: choice
+          options:
+            - EPS
+        eps:
+          type: choice
+          options:
+            - 0.5
+            - 0.9
+            - 0.99
+
+random:
+  samples: 3
+  seed: 42
+
+  data:
+    type: parameter_collection
+    params:
+      split_seed:
+        type: randint
+        min: 1
+        max: 999999

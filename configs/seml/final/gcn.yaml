@@ -1,0 +1,106 @@
+seml:
+  db_collection: final-gcn
+  executable: /nfs/students/grafberg/guided-research/guided-research-ws19/src/scripts/gcn.py
+  conda_environment: guided-research-ws19
+slurm:
+  name: gcn
+  output_dir: slurm
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 8G          # memory
+    cpus-per-task: 1  # num cores
+    time: 0-00:05     # max time, D-HH:MM
+
+###### BEGIN PARAMETER CONFIGURATION ######
+
+fixed:
+
+  epochs: 500
+  device: cuda
+  patience: 20
+  hidden_sizes: 16
+  dropout: 0.5
+  weight_decay: 0.0005
+  learning_rate: 0.01
+
+random:
+  samples: 10
+  seed: 42
+
+  data:
+    type: parameter_collection
+    params:
+      split_seed:
+        type: randint
+        min: 1
+        max: 999999
+
+
+graph-datasets-planetoid:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - cora
+            - citeseer
+        shuffle_splits:
+          type: choice
+          options:
+            - False
+
+graph-datasets-random-splits:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - cora
+            - citeseer
+        shuffle_splits:
+          type: choice
+          options:
+            - True
+        remove_edges_percentage:
+          type: choice
+          options:
+            - 0.0
+            - 0.25
+            - 0.50
+            - 0.75
+
+uci-datasets-random-splits:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - wine
+            - breast_cancer
+            - digits
+        shuffle_splits:
+          type: choice
+          options:
+            - True
+        knn_metric:
+          type: choice
+          options:
+            - minkowski
+            - cosine
+        nearest_neighbor_k:
+          type: choice
+          options:
+            - 10
+            - 20
+        normalize_features:
+          type: choice
+          options:
+            - False
+

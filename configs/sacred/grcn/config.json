@@ -1,0 +1,42 @@
+{
+  "data": {
+    "dataset": "cora",
+    "make_undirected": true,
+    "nearest_neighbor_k": null,
+    "normalize_features": true,
+    "remove_edges_percentage": 0.0,
+    "shuffle_splits": false,
+    "use_largest_subgraph": false
+  },
+  "gae": {
+    "add_original": true,
+    "affine_prob_lr": 0.0,
+    "dropout": 0.0,
+    "embedding_dim": 16,
+    "gcn_weight_decay": 0.0005,
+    "normalize_similarities": false,
+    "optimizer_type": "Adam",
+    "prob_power": 1.0,
+    "probs_bias_init": 0.0,
+    "probs_factor_init": 1.0,
+    "use_sigmoid": false,
+    "use_tanh": false,
+    "weights_lr": 0.001
+  },
+  "naive-runner": {
+    "n_samples_empirical_mean": 1,
+    "regularize": false,
+    "smoothness_factor": 0.0,
+    "disconnection_factor": 0.0,
+    "sparsity_factor": 1.0,
+    "patience": 20
+  },
+  "sampler": {
+    "dense": true,
+    "sparsification": "KNN",
+    "knn_metric": "dot",
+    "k": 200
+  },
+  "graph_model": "gae",
+  "seed": 597905255
+}

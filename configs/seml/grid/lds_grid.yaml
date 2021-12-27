@@ -1,0 +1,123 @@
+seml:
+  db_collection: lds-grid
+  executable: /nfs/students/grafberg/guided-research/guided-research-ws19/src/scripts/bilevel.py
+  conda_environment: guided-research-ws19
+slurm:
+  name: lds-grid
+  output_dir: slurm
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 12G          # memory
+    cpus-per-task: 1  # num cores
+    time: 0-00:10     # max time, D-HH:MM
+
+###### BEGIN PARAMETER CONFIGURATION ######
+
+fixed:
+
+  device: cuda
+  hidden_sizes: 16
+  gcn_weight_decay:  0.0005
+  n_samples_empirical_mean: 16
+  dropout: 0.5
+  patience: 20
+
+  graph_model: lds
+
+grid:
+  gcn_optimizer_learning_rate:
+    type: choice
+    options:
+      - 0.005
+      - 0.01
+      - 0.02
+
+  lds:
+    type: parameter_collection
+    params:
+      directed:
+        type: choice
+        options:
+          - False
+      lr:
+        type: choice
+        options:
+          - 1.0
+          - 0.1
+
+  outer-trainer:
+    type: parameter_collection
+    params:
+      lr_decay:
+        type: choice
+        options:
+          - 1.0
+          - 0.99
+          - 0.9
+
+  hyper_gradient_interval:
+    type: choice
+    options:
+      - 5
+      - 20
+
+  seed:
+    type: choice
+    options:
+      - 142
+      - 242
+
+
+graph-datasets:
+  fixed:
+    data:
+      type: parameter_collection
+      params:
+        shuffle_splits: False
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - cora
+            - citeseer
+
+
+uci-datasets-random-splits:
+  grid:
+    data:
+      type: parameter_collection
+      params:
+        dataset:
+          type: choice
+          options:
+            - wine
+            - breast_cancer
+            - digits
+        shuffle_splits:
+          type: choice
+          options:
+            - True
+        knn_metric:
+          type: choice
+          options:
+            - minkowski
+            - cosine
+        nearest_neighbor_k:
+          type: choice
+          options:
+            - 10
+            - 20
+        normalize_features:
+          type: choice
+          options:
+            - True
+            - False
+        split_seed:
+          type: choice
+          options:
+            - 262508
+            - 680425

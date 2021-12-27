@@ -1,0 +1,17 @@
+{
+  "data": {
+    "dataset": "cora",
+    "make_undirected": true,
+    "nearest_neighbor_k": null,
+    "normalize_features": true,
+    "remove_edges_percentage": 0.0,
+    "shuffle_splits": false,
+    "use_largest_subgraph": false
+  },
+  "lds": {
+    "directed": false,
+    "lr": 1.0
+  },
+  "graph_model": "lds",
+  "seed": 597905255
+}

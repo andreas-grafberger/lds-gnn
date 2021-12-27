@@ -1,0 +1,34 @@
+name: guided-research-ag
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - click=7.0
+  - matplotlib=3.1.1
+  - numpy=1.17.2
+  - numpy-base=1.17.2
+  - pytest=5.2.2
+  - python=3.7.5
+  - pytorch=1.3
+  - pip
+  - pip:
+    - neptune-client==0.4.95
+    - neptune-contrib==0.14.0
+    - networkx==2.4
+    - pandas==0.25.3
+    - pillow==5.4.1
+    - pyyaml==5.1.2
+    - requests==2.22.0
+    - sacred==0.8.0
+    - scikit-learn==0.21.3
+    - scipy==1.3.1
+    - simplejson==3.16.0
+    - torch-cluster==1.4.5
+    - torch-geometric==1.3.2
+    - torch-scatter==1.3.2
+    - torch-sparse==0.4.3
+    - torchmeta==1.2.1
+    - torchtest
+    - pytest-mock
+    - psutil
+

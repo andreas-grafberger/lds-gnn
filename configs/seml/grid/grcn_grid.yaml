@@ -1,0 +1,131 @@
+seml:
+  db_collection: grcn-grid
+  executable: /nfs/students/grafberg/guided-research/guided-research-ws19/src/scripts/naive.py
+  conda_environment: guided-research-ws19
+slurm:
+  name: grcn_grid
+  output_dir: slurm
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 11G          # memory
+    cpus-per-task: 1  # num cores
+    time: 0-00:15     # max time, D-HH:MM
+
+###### BEGIN PARAMETER CONFIGURATION ######
+
+fixed:
+  device: cuda
+  hidden_sizes: 16
+  gcn_weight_decay:  0.0005
+  n_samples_empirical_mean: 16
+  gcn_optimizer_learning_rate: 0.01
+  dropout: 0.5
+  patience: 20
+  graph_model: gae
+  sampler:
+    type: parameter_collection
+    params:
+      dense: True
+      sparsification: KNN
+      knn_metric: dot
+  data:
+    type: parameter_collection
+    params:
+      remove_edges_percentage: 0.0
+      shuffle_splits: True
+  naive-runner:
+    type: parameter_collection
+    params:
+      n_samples_empirical_mean: 0
+      regularize: False
+
+  gae:
+    type: parameter_collection
+    params:
+      add_original: True
+      use_sigmoid: False
+      optimizer_type: Adam
+
+grid:
+  data:
+    type: parameter_collection
+    params:
+      dataset:
+        type: choice
+        options:
+          - cora
+          - citeseer
+      split_seed:
+        type: choice
+        options:
+          - 209753
+          - 239482
+          - 321327
+  seed:
+    type: choice
+    options:
+      - 142
+      - 242
+
+  sampler:
+    type: parameter_collection
+    params:
+      k:
+        type: choice
+        options:
+          - 5
+          - 10
+          - 20
+          - 30
+          - 100
+          - 200
+
+      knn_metric:
+        type: choice
+        options:
+          - dot
+          - cosine
+
+  gae:
+    type: parameter_collection
+    params:
+      use_tanh:
+        type: choice
+        options:
+          - False
+          - True
+      dropout:
+        type: choice
+        options:
+          - 0.0
+          - 0.5
+      gcn_weight_decay:
+        type: choice
+        options:
+          - 0.0001
+          - 0.0005
+          - 0.02
+      embedding_dim:
+        type: choice
+        options:
+          - 16
+          - 128
+      normalize_similarities:
+        type: choice
+        options:
+          - True
+          - False
+      weights_lr:
+        type: choice
+        options:
+          - 0.001
+          - 0.01
+      affine_prob_lr:
+        type: choice
+        options:
+          - 0.0
+          - 0.001
+          - 0.01
+
+
